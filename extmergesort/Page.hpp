@@ -19,7 +19,7 @@ public:
 
 private:
 	std::vector<int> dataVec; // each int value stands for one data tuple
-	const int TUPLES_PER_PAGE = 0; // TODO: assign correct value
+	const int TUPLES_PER_PAGE = PAGE_SIZE / TUPLE_SIZE; // TODO: assign correct value
 };
 
 #endif

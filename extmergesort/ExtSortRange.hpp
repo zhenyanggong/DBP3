@@ -22,7 +22,7 @@ private:
 	int groupSize;
 	void pass0Sort();
 	bool passMergeSort();
-	const int BUFFER_PAGE = 0; //TODO: assign correct value
+	const int BUFFER_PAGE = MEM_BUFFER_SIZE / PAGE_SIZE; //TODO: assign correct value
 
 };
 

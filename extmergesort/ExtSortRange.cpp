@@ -67,7 +67,10 @@ void ExtSortRange::extMergeSort()
 // Hint: You may use method functions of Page class
 void ExtSortRange::pass0Sort() 
 {
-
+	for (auto it = pageRange.begin(); it != pageRange.end(); ++it)
+	{
+		(*it)->sortPage();
+	}
 }
 
 // TODO: implement one merge sort pass (not pass0) of external merge sort
@@ -75,5 +78,51 @@ void ExtSortRange::pass0Sort()
 // Hint: You may use member variable
 bool ExtSortRange::passMergeSort() 
 {
+	int B1 = BUFFER_PAGE - 1;
+
+	if ((groupSize / B1) >= pageRange.size())
+	{
+		return false;
+	}
+	else
+	{
+		groupSize = groupSize * B1;
+		bool keep_sorting = true;
+		int number_pages = int(pageRange.size());
+		int sort_index = 0;
+		while (keep_sorting)
+		{
+			//int keeper = 0;
+			std::vector<int> inputData;
+			for (int i = 0; i < groupSize; i++)
+			{
+				sort_index = sort_index + i;
+				if (sort_index < number_pages)
+				{
+					std::vector<int> temp = pageRange[sort_index]->getData();
+					delete pageRange[sort_index];
+					pageRange[sort_index] = new Page;
+					for (auto j : temp)
+					{
+						inputData.push_back(j);
+					}
+				}
+				else
+				{
+					keep_sorting = false;
+				}
+			}
+			std::sort(inputData.begin(), inputData.end());
+			sort_index += 1;
+			for (int i = 0; i < sort_index; i++)
+			{
+				for (auto k : inputData)
+				{
+					pageRange[i]->load(k);
+				}
+			}
+		}
+		return true;
+	}
 	
 }
