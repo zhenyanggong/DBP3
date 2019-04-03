@@ -90,18 +90,18 @@ bool ExtSortRange::passMergeSort()
 		bool keep_sorting = true;
 		int number_pages = int(pageRange.size());
 		int sort_index = 0;
+		Page* temp = new Page;
+		std::vector<Page*> newRange;
 		while (keep_sorting)
 		{
 			//int keeper = 0;
-			std::vector<int> inputData;
-			for (int i = 0; i < groupSize; i++)
+			std::deque<int> inputData;
+			for (int i = 0; i < groupSize; ++i)
 			{
-				sort_index = sort_index + i;
+				
 				if (sort_index < number_pages)
 				{
 					std::vector<int> temp = pageRange[sort_index]->getData();
-					delete pageRange[sort_index];
-					pageRange[sort_index] = new Page;
 					for (auto j : temp)
 					{
 						inputData.push_back(j);
@@ -111,17 +111,29 @@ bool ExtSortRange::passMergeSort()
 				{
 					keep_sorting = false;
 				}
+				sort_index = sort_index + i;
 			}
 			std::sort(inputData.begin(), inputData.end());
 			sort_index += 1;
-			for (int i = 0; i < sort_index; i++)
+			while (!inputData.empty())
 			{
-				for (auto k : inputData)
+				while (temp->load(inputData[0]))
 				{
-					pageRange[i]->load(k);
+					inputData.pop_front();
 				}
+
+				Page* output = new Page;
+				for (auto i : temp->getData())
+				{
+					output->load(i);
+				}
+				newRange.push_back(output);
+				delete temp;
+				temp = new Page;
 			}
 		}
+		
+		pageRange = newRange;
 		return true;
 	}
 	
