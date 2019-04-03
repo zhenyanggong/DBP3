@@ -4,6 +4,7 @@
 #include <sstream>
 #include <algorithm>
 #include <math.h>
+#include <deque>
 
 // initializa Chunk of Disk memory, each page in a group by itself
 // create first empty page
@@ -80,7 +81,7 @@ bool ExtSortRange::passMergeSort()
 {
 	int B1 = BUFFER_PAGE - 1;
 
-	if ((groupSize / B1) >= pageRange.size())
+	if ((groupSize) >= int(pageRange.size()))
 	{
 		return false;
 	}
@@ -90,46 +91,46 @@ bool ExtSortRange::passMergeSort()
 		bool keep_sorting = true;
 		int number_pages = int(pageRange.size());
 		int sort_index = 0;
-		Page* temp = new Page;
+		//Page* temp = new Page;
 		std::vector<Page*> newRange;
+
 		while (keep_sorting)
 		{
-			//int keeper = 0;
+			//std::cout << "entering sort" << std::endl;
 			std::deque<int> inputData;
+			//std::cout << groupSize << " ";
 			for (int i = 0; i < groupSize; ++i)
-			{
-				
+			{	
 				if (sort_index < number_pages)
 				{
+					//std::cout << sort_index << " ";
 					std::vector<int> temp = pageRange[sort_index]->getData();
 					for (auto j : temp)
 					{
 						inputData.push_back(j);
+						//std::cout << j << " ";
 					}
 				}
 				else
 				{
 					keep_sorting = false;
 				}
-				sort_index = sort_index + i;
+				sort_index++;
 			}
 			std::sort(inputData.begin(), inputData.end());
-			sort_index += 1;
+
 			while (!inputData.empty())
 			{
-				while (temp->load(inputData[0]))
+				Page* temp = new Page;
+				
+				while (!inputData.empty() && temp->load(inputData[0]))
 				{
+					//std::cout << "Entering replace" << std::endl;
+					//std::cout << inputData[0] << " ";
 					inputData.pop_front();
 				}
-
-				Page* output = new Page;
-				for (auto i : temp->getData())
-				{
-					output->load(i);
-				}
-				newRange.push_back(output);
-				delete temp;
-				temp = new Page;
+				newRange.push_back(temp);
+				
 			}
 		}
 		
