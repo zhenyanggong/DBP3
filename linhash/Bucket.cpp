@@ -24,7 +24,7 @@ bool Bucket::insert(std::string input)
     // if bucket not dull, insert normally
     key_vec.push_back(input);
     if (keys.size() < MAX_BUCKET_SIZE) {
-        keys.insert(input);
+        keys.push_back(input);
         return false;
     } 
     else {

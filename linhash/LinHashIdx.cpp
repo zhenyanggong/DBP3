@@ -93,7 +93,8 @@ void LinHashIdx::insert(std::string input)
         Bucket* newBucket = new Bucket;
         directory.push_back(newBucket);
         for (auto key : temp) {
-            i = key % (INITIAL_NUM_BUCKETS * int(pow(2, level+1)));
+            std::cout << key;
+            i =  custom_hash(key) % (INITIAL_NUM_BUCKETS * int(pow(2, level+1)));
             directory[i]->insert(key);
         }
         // if next reaching end of this round

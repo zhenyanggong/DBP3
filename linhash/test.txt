@@ -1,0 +1,1 @@
+print 1 print 2 print 1 print 15 print 13 print 9 print 21 print 25 print 26 print 9 print 41 print 18 print 4 print exit
