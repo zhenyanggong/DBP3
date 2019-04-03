@@ -67,14 +67,58 @@ LinHashIdx::LinHashIdx() : next(0), level(0)
 void LinHashIdx::insert(std::string input)
 {
     // Insert your code here
+    // check if existed 
+    if (!contains(input)){
+        return;
+    }
+    // add input to key vector
+    key_vec.push_back(input);
+    // calculate correct level and hash bucket
+    unsigned int i = custom_hash(input) % (INITIAL_NUM_BUCKETS * int(pow(2, level)));
+    unsigned int bucket_level = level;
+    if (i < next) {
+        bucket_level = bucket_level + 1;
+        i = custom_hash(input) % (INITIAL_NUM_BUCKETS * int(pow(2, bucket_level)));
+    }
+    // insert key 
+    bool need_split = directory[i]->insert(input);
+    // split the next bucket
+    if (need_split) {
+        std::vector<std::string> temp = directory[next]->key_vec;
+        // sort all the keys
+        std::sort(temp.begin(), temp.end());
+        // replace the old bucket, and add a splitting bucket at the end of directory
+        delete directory[next];
+        directory[next] = new Bucket;
+        Bucket* newBucket = new Bucket;
+        directory.push_back(newBucket);
+        for (auto key : temp) {
+            i = key % (INITIAL_NUM_BUCKETS * int(pow(2, level+1)));
+            directory[i]->insert(key);
+        }
+        // if next reaching end of this round
+        if (next+1 == INITIAL_NUM_BUCKETS * int(pow(2,level))) {
+            level ++;
+            next = 0;
+        }
+        else {
+            next ++;
+        }
+    }
+
 }
+
 
 // Search the index for the given value, and return true if it's found
 bool LinHashIdx::contains(std::string input)
 {
     // Insert your code here
-
-    return true;
+    if (find(key_vec.begin(), key_vec.end(), input) == key_vec.end()) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 // DO NOT MODIFY THIS FUNCTION!

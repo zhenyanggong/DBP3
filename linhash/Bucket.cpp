@@ -21,8 +21,22 @@ Bucket::~Bucket()
 bool Bucket::insert(std::string input)
 {
     // Insert your code here
-
-    return false;
+    // if bucket not dull, insert normally
+    key_vec.push_back(input);
+    if (keys.size() < MAX_BUCKET_SIZE) {
+        keys.insert(input);
+        return false;
+    } 
+    else {
+        if (overflowBucket == nullptr) {
+            overflowBucket = new Bucket;
+            overflowBucket->insert(input);
+        }
+        else {
+            overflowBucket->insert(input);
+        }
+        return true;
+    }
 }
 
 // DO NOT MODIFY THIS FUNCTION!

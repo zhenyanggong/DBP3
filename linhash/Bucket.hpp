@@ -14,6 +14,7 @@ public:
     ~Bucket();
     bool insert(std::string input);
     void print();
+    std::vector<std::string> key_vec;
 
 private:
 
