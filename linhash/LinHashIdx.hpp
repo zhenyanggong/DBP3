@@ -14,6 +14,7 @@ public:
     void insert(std::string input);
     bool contains(std::string input);
     void print();
+    bool myfunction(std::string i, std::string j);
     std::vector<std::string> key_vec;
 
 private:

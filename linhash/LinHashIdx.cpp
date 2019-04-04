@@ -1,6 +1,7 @@
 #include "LinHashIdx.hpp"
 
 #include <functional>
+#include <algorithm>
 #include <math.h>
 #include <cassert>
 #include <bitset>
@@ -86,14 +87,16 @@ void LinHashIdx::insert(std::string input)
     if (need_split) {
         std::vector<std::string> temp = directory[next]->key_vec;
         // sort all the keys
-        std::sort(temp.begin(), temp.end());
+        std::sort(temp.begin(), temp.end(), [](const std::string & lhs, const std::string & rhs) {
+            return custom_hash(lhs) < custom_hash(rhs);
+        });
         // replace the old bucket, and add a splitting bucket at the end of directory
         delete directory[next];
         directory[next] = new Bucket;
         Bucket* newBucket = new Bucket;
         directory.push_back(newBucket);
         for (auto key : temp) {
-            std::cout << key;
+            //std::cout << key;
             i =  custom_hash(key) % (INITIAL_NUM_BUCKETS * int(pow(2, level+1)));
             directory[i]->insert(key);
         }
@@ -109,6 +112,10 @@ void LinHashIdx::insert(std::string input)
 
 }
 
+bool LinHashIdx::myfunction(std::string i, std::string j) 
+{ 
+    return (custom_hash(i) < custom_hash(j)); 
+}
 
 // Search the index for the given value, and return true if it's found
 bool LinHashIdx::contains(std::string input)
